@@ -130,13 +130,4 @@ dmypy.json
 
 # .idea
 .idea
-
-# .vscode
-.vscode/
-
-# sqlite
-.sqlite3
-
-# static and media files
-static/
-media/
+.vscode

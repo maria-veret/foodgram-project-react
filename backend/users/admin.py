@@ -10,13 +10,6 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ('username', 'first_name', 'last_name')
     list_filter = ('first_name', 'email')
     empty_value_display = '-пусто-'
-    inlines = [FollowerInLine, FollowingInLine]
-
-
-class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'following', 'follower')
-    search_fields = ('following',)
-    empty_value_display = '-пусто-'
 
 
 admin.site.register(User, UserAdmin)

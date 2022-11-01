@@ -138,7 +138,7 @@ class RecipeCartViewSet(CreateDestroyViewSet):
         detail=True)
     def delete(self, request, recipe_id):
         u = request.user
-        if not u.shopping_cart.select_related(
+        if not u.recipe_cart.select_related(
                 'recipe').filter(
                     recipe_id=recipe_id).exists():
             return Response({'errors': 'Этого рецепта нет в корзине'},

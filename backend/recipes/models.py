@@ -136,8 +136,6 @@ class IngredientAmount(models.Model):
         'Количество',
         default=1,
         validators=(MinValueValidator(1, 'Минимум 1'),),
-        verbose_name='Количество продукта',
-        help_text='Введите количество продукта'
     )
 
     class Meta:
