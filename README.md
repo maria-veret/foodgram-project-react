@@ -49,7 +49,7 @@ DB_HOST=db
 DB_PORT=5432
 ```
 
-Создайте образ foodgram_backend и foodgram_frontend(текущая директория должна быть backend или frontend соответственно):
+Создайте образ foodgram_backend и foodgram_frontend (текущая директория должна быть backend или frontend соответственно):
 
 ```
 docker build -t mari4veret/foodgram_backend:latest .
