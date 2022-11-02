@@ -1,3 +1,0 @@
-id,password,is_superuser,is_staff,is_active,username,email,first_name,last_name
-1,admin9999,1,1,1,admin,admin7@mail.ru,,
-2,maria9999,0,0,1,maria,veret.maria@gmail.com,maria,amm
