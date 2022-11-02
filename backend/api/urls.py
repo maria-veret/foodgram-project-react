@@ -20,8 +20,8 @@ router.register(
     r'recipes/(?P<recipe_id>\d+)/favorite', FavRecipeViewSet,
     basename='favorite')
 router.register(
-    r'recipes/(?P<recipe_id>\d+)/shopping_cart', RecipeCartViewSet,
-    basename='shoppingcart')
+    r'recipes/(?P<recipe_id>\d+)/recipe_cart', RecipeCartViewSet,
+    basename='recipecart')
 
 urlpatterns = [
     path('', include(router.urls)),
