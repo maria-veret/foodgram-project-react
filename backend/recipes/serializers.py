@@ -17,7 +17,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-        if request.user.is_anonymous:
+        if request.user.is_authenticated:
             return False
         return Follow.objects.filter(
             user=request.user, author=obj.pk).exists()
