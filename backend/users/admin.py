@@ -10,7 +10,7 @@ class UserAdmin(admin.ModelAdmin):
                     'is_active', 'date_joined')
     search_fields = ('username', 'first_name', 'last_name')
     list_filter = ('username', 'email')
-    list_display_links = ('username')
+    list_display_links = ('username',)
     empty_value_display = '-пусто-'
     fieldsets = (
         (None, {'fields': ('username', 'first_name', 'last_name', 'email')}),
@@ -27,5 +27,5 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'author')
-    list_display_links = ('user')
-    search_fields = ('user')
+    list_display_links = ('user',)
+    search_fields = ('user',)

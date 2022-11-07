@@ -9,8 +9,8 @@ from recipes.models import (Ingredient, Recipe,
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'measurement_unit')
-    search_fields = ('name')
-    list_filter = ('name')
+    search_fields = ('name',)
+    list_filter = ('name',)
     empty_value_display = '-пусто-'
 
 
@@ -27,9 +27,9 @@ class RecipeAdmin(admin.ModelAdmin):
                     'pub_date', 'image')
     search_fields = ('name', 'author', 'tags')
     list_filter = ('name', 'author', 'tags', 'pub_date')
-    ordering = ('-pub_date')
+    ordering = ('-pub_date',)
     readonly_fields = ('favorite_count', 'pub_date')
-    list_display_links = ('name')
+    list_display_links = ('name',)
     empy_value_display = '-пусто-'
 
     @admin.display(description='Сколько раз добавлено в избранное:')
@@ -40,8 +40,8 @@ class RecipeAdmin(admin.ModelAdmin):
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'recipe')
-    search_fields = ('user')
-    list_display_links = ('user')
+    search_fields = ('user',)
+    list_display_links = ('user',)
     empy_value_display = '-пусто-'
 
 
@@ -49,8 +49,8 @@ class FavoriteAdmin(admin.ModelAdmin):
 class IngredientRecipeAdmin(admin.ModelAdmin):
     list_display = ('id', 'recipe',
                     'ingredient', 'amount')
-    search_fields = ('recipe')
-    list_display_links = ('recipe')
+    search_fields = ('recipe',)
+    list_display_links = ('recipe',)
     empy_value_display = '-пусто-'
 
 
