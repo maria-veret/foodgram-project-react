@@ -27,11 +27,6 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     USERNAME_FIELD = 'email'
 
-    def save(self, *args, **kwargs):
-        if self.username == 'me':
-            return ValidationError('Username "me" запрещен')
-        super().save(*args, **kwargs)
-
     @property
     def is_admin(self):
         return self.is_superuser
@@ -46,12 +41,6 @@ class User(AbstractUser):
         return self.username
 
     class Meta:
-        constraints = [
-            models.CheckConstraint(
-                check=models.Q(username='me'),
-                name='Имя "me" запрещено',
-            )
-        ]
         ordering = ('username',)
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
