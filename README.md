@@ -174,6 +174,18 @@ sudo docker compose up -d
 sudo docker compose exec backend python manage.py migrate
 ```
 
+Создать суперпользователя:
+
+```
+sudo docker compose exec backend python manage.py createsuperuser
+```
+
+Собрать статику:
+
+```
+sudo docker compose exec backend python manage.py collectstatic --noinput
+```
+
 
 ### В проекте использованы технологии:
 * Python
