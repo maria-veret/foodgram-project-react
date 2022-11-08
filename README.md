@@ -21,6 +21,12 @@ python -m venv env
 source venv/Scripts/activate
 ```
 
+Перейдите в директорию проекта:
+
+```
+cd backend
+```
+
 Установите зависимости из файла requirements.txt:
 
 ```
@@ -29,12 +35,6 @@ python -m pip install --upgrade pip
 
 ```
 pip install -r requirements.txt
-```
-
-Перейдите в директорию проекта:
-
-```
-cd backend
 ```
 
 Создайте файл .env в директории backend и заполните его данными по образцу:
@@ -80,7 +80,7 @@ docker-compose exec -T backend python manage.py migrate
 Создайте суперпользователя:
 
 ```
-sudo docker compose exec backend python manage.py createsuperuser
+docker compose exec backend python manage.py createsuperuser
 ```
 
 Соберите статику:
