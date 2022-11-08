@@ -49,12 +49,6 @@ class User(AbstractUser):
         ordering = ('username',)
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
-        constraints = [
-            models.CheckConstraint(
-                check=~models.Q(username='me'),
-                name='Пользователь не может быть назван me!',
-            )
-        ]
 
 
 class Follow(models.Model):

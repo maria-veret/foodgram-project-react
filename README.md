@@ -146,10 +146,10 @@ git clone https://github.com/maria-veret/foodgram-project-react.git
 Создайте и активируйте виртуальное окружение:
 
 ```
-python -m venv env
+python -m venv venv
 ```
 ```
-source env/bin/activate
+source venv/bin/activate
 ```
 
 Установите на сервере Docker, Docker Compose:
