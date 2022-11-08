@@ -2,7 +2,7 @@ version: '3.3'
 services:
 
   frontend:
-    image: mari4veret/foodgram_frontend:v1
+    image: mari4veret/foodgram_frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
 

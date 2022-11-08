@@ -19,11 +19,25 @@ from .permissions import IsAuthenticatedOwnerOrReadOnly
 from .paginations import CustomPageNumberPagination
 
 
+class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
+    permission_classes = (AllowAny,)
+    filter_backends = (IngredientFilter,)
+    search_fields = ('^name',)
+
+
+class TagViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Tag.objects.all()
+    permission_classes = (AllowAny,)
+    serializer_class = TagSerializer
+
+
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    permission_classes = (IsAuthenticatedOwnerOrReadOnly)
     serializer_class = RecipeSerializer
-    filter_backends = (DjangoFilterBackend)
+    permission_classes = (IsAuthenticatedOwnerOrReadOnly,)
+    filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
     pagination_class = CustomPageNumberPagination
 
@@ -34,42 +48,55 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def __favorite_shopping(request, pk, model, errors):
         if request.method == 'POST':
             if model.objects.filter(user=request.user, recipe__id=pk).exists():
-                return Response({'errors': errors['recipe_in']},
-                                status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {'errors': errors['recipe_in']},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             recipe = get_object_or_404(Recipe, id=pk)
             model.objects.create(user=request.user, recipe=recipe)
-            serializer = FollowRecipeSerializer(recipe,
-                                                context={'request': request})
+            serializer = FollowRecipeSerializer(
+                recipe, context={'request': request}
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         recipe = model.objects.filter(user=request.user, recipe__id=pk)
         if recipe.exists():
             recipe.delete()
-            return Response({'msg': 'Удалено'},
-                            status=status.HTTP_204_NO_CONTENT)
-        return Response({'error': errors['recipe_not_in']},
-                        status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'msg': 'Успешно удалено'},
+                status=status.HTTP_204_NO_CONTENT
+            )
+        return Response(
+            {'error': errors['recipe_not_in']},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
-    @action(methods=['POST', 'DELETE'],
-            detail=True,
-            permission_classes=[rest_framework.permissions.IsAuthenticated])
+    @action(
+        methods=['POST', 'DELETE'],
+        detail=True,
+        permission_classes=[rest_framework.permissions.IsAuthenticated]
+    )
     def favorite(self, request, pk):
         return self.__favorite_shopping(request, pk, Favorite, {
             'recipe_in': 'Этот рецепт уже находится в избранном',
             'recipe_not_in': 'Этого рецепта нет в избранном'
         })
 
-    @action(methods=['POST', 'DELETE'],
-            detail=True,
-            permission_classes=[rest_framework.permissions.IsAuthenticated])
+    @action(
+        methods=['POST', 'DELETE'],
+        detail=True,
+        permission_classes=[rest_framework.permissions.IsAuthenticated]
+    )
     def shopping_cart(self, request, pk):
         return self.__favorite_shopping(request, pk, ShoppingCart, {
             'recipe_in': 'Этот рецепт уже в списке покупок',
             'recipe_not_in': 'Этого рецепта нет в списке покупок'
         })
 
-    @action(methods=['GET'],
-            detail=False,
-            permission_classes=[rest_framework.permissions.IsAuthenticated])
+    @action(
+        methods=['GET'],
+        detail=False,
+        permission_classes=[rest_framework.permissions.IsAuthenticated]
+    )
     def download_shopping_cart(self, request):
         ingredients_obj = (
             IngredientRecipe.objects.filter(recipe__carts__user=request.user)
@@ -88,19 +115,5 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 ind = '0' + str(ind)
             ingredients_list.append(
                 f'{ind}. {key} - ' f'{value[0]} ' f'{value[1]}'
-                )
+            )
         return download_pdf(ingredients_list)
-
-
-class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Ingredient.objects.all()
-    serializer_class = IngredientSerializer
-    permission_classes = (AllowAny)
-    filter_backends = (IngredientFilter)
-    search_fields = ('^name')
-
-
-class TagViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Tag.objects.all()
-    serializer_class = TagSerializer
-    permission_classes = (AllowAny)

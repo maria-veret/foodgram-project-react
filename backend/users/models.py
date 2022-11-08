@@ -7,7 +7,7 @@ from django.db import models
 class User(AbstractUser):
     username_validator = UnicodeUsernameValidator()
     username = models.CharField(
-        verbose_name='Логин',
+        verbose_name='Логин', 
         max_length=150,
         unique=True,
         validators=[username_validator],
