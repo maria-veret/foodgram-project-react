@@ -6,11 +6,20 @@ from recipes.models import (Ingredient, Recipe,
                             ShoppingCart)
 
 
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'slug', 'color')
+    list_editable = ('color',)
+    list_display_links = ('name',)
+    search_fields = ('name',)
+
+
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'measurement_unit')
+    list_filter = ('name', )
+    list_display_links = ('name',)
     search_fields = ('name',)
-    list_filter = ('name',)
     empty_value_display = '-пусто-'
 
 
@@ -37,14 +46,6 @@ class RecipeAdmin(admin.ModelAdmin):
         return recipe.favorites_recipe.count()
 
 
-@admin.register(Favorite)
-class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'recipe')
-    search_fields = ('user',)
-    list_display_links = ('user',)
-    empy_value_display = '-пусто-'
-
-
 @admin.register(IngredientRecipe)
 class IngredientRecipeAdmin(admin.ModelAdmin):
     list_display = ('id', 'recipe',
@@ -54,18 +55,17 @@ class IngredientRecipeAdmin(admin.ModelAdmin):
     empy_value_display = '-пусто-'
 
 
-@admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'slug', 'color')
-    list_editable = ('color',)
-    list_display_links = ('name',)
-    search_fields = ('name',)
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'recipe')
+    search_fields = ('user',)
+    list_display_links = ('user',)
+    empy_value_display = '-пусто-'
 
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'recipe')
-    search_fields = ('user', 'recipe')
-    list_filter = ('user', 'recipe')
+    search_fields = ('user',)
     list_display_links = ('user',)
     empy_value_display = '-пусто-'

@@ -12,6 +12,13 @@ from .models import (Ingredient, Recipe,
                      ShoppingCart)
 
 
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('id', 'name', 'color', 'slug')
+        model = Tag
+        read_only_fields = ('id', 'name', 'color', 'slug')
+
+
 class AuthorSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField()
 
@@ -27,6 +34,17 @@ class AuthorSerializer(serializers.ModelSerializer):
         fields = ('email', 'id', 'username',
                   'first_name', 'last_name',
                   'is_subscribed')
+
+
+class FollowRecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = (
+            'id',
+            'name',
+            'image',
+            'cooking_time'
+        )
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -56,6 +74,48 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
                 fields=('ingredient', 'recipe')
             )
         ]
+
+
+class RecipeListSerializer(serializers.ModelSerializer):
+    author = AuthorSerializer(read_only=True)
+    ingredients = serializers.SerializerMethodField()
+    tags = TagSerializer(many=True)
+    is_favorited = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
+
+    def get_ingredients(self, obj):
+        queryset = IngredientRecipe.objects.filter(recipe=obj)
+        return IngredientRecipeSerializer(queryset, many=True).data
+
+    def get_is_favorited(self, obj):
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return Favorite.objects.filter(user=user.id, recipe=obj.id).exists()
+
+    def get_is_in_shopping_cart(self, obj):
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return ShoppingCart.objects.filter(
+            user=user.id,
+            recipe=obj.id
+        ).exists()
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'id',
+            'tags',
+            'author',
+            'ingredients',
+            'is_favorited',
+            'is_in_shopping_cart',
+            'name',
+            'image',
+            'text',
+            'cooking_time'
+        )
 
 
 class IngredientCreateSerializer(serializers.ModelSerializer):
@@ -139,69 +199,13 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id',
-                  'tags',
-                  'author',
-                  'ingredients',
-                  'name',
-                  'image',
-                  'text',
-                  'cooking_time')
-
-
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = ('id', 'name', 'color', 'slug')
-        model = Tag
-        read_only_fields = ('id', 'name', 'color', 'slug')
-
-
-class RecipeListSerializer(serializers.ModelSerializer):
-    author = AuthorSerializer(read_only=True)
-    ingredients = serializers.SerializerMethodField()
-    tags = TagSerializer(many=True)
-    is_favorited = serializers.SerializerMethodField()
-    is_in_shopping_cart = serializers.SerializerMethodField()
-
-    def get_ingredients(self, obj):
-        queryset = IngredientRecipe.objects.filter(recipe=obj)
-        return IngredientRecipeSerializer(queryset, many=True).data
-
-    def get_is_favorited(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return Favorite.objects.filter(user=user.id, recipe=obj.id).exists()
-
-    def get_is_in_shopping_cart(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return ShoppingCart.objects.filter(
-            user=user.id,
-            recipe=obj.id
-        ).exists()
-
-    class Meta:
-        model = Recipe
         fields = (
             'id',
             'tags',
             'author',
             'ingredients',
-            'is_favorited',
-            'is_in_shopping_cart',
             'name',
             'image',
             'text',
             'cooking_time'
         )
-
-
-class FollowRecipeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Recipe
-        fields = ('id',
-                  'name',
-                  'image',
-                  'cooking_time')

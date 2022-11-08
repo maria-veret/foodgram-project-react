@@ -5,11 +5,12 @@ from users.models import User, Follow
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'username', 'first_name',
-                    'last_name', 'is_superuser',
-                    'is_active', 'date_joined')
-    search_fields = ('username', 'first_name', 'last_name')
-    list_filter = ('username', 'email')
+    list_display = (
+        'id', 'email', 'username', 'first_name', 'last_name', 'is_superuser',
+        'is_active', 'date_joined'
+    )
+    search_fields = ('username',)
+    list_filter = ('email', 'username')
     list_display_links = ('username',)
     empty_value_display = '-пусто-'
     fieldsets = (
@@ -17,10 +18,10 @@ class UserAdmin(admin.ModelAdmin):
         ('Права', {'fields':  ('is_staff', 'is_active')})
     )
     add_fieldsets = (
-        (None, {'fields': ('username', 'first_name',
-                           'last_name', 'email',
-                           'password1', 'password2',
-                           'is_staff', 'is_active')})
+        (None, {'fields': (
+                    'username', 'first_name', 'last_name', 'email',
+                    'password1', 'password2', 'is_staff', 'is_active'
+        )})
     )
 
 
