@@ -8,7 +8,6 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from .filters import IngredientFilter, RecipeFilter, Recipe
-from .utils import download_pdf
 from .models import (Ingredient,
                      Favorite, Tag,
                      IngredientRecipe,
@@ -16,11 +15,12 @@ from .models import (Ingredient,
 from .serializers import (IngredientSerializer, TagSerializer,
                           RecipeSerializer, FollowRecipeSerializer)
 from .permissions import IsAuthenticatedOwnerOrReadOnly
-from .paginations import CustomPageNumberPagination
+from .utils import download_pdf
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
+    pagination_class = None
     serializer_class = IngredientSerializer
     permission_classes = (AllowAny,)
     filter_backends = (IngredientFilter,)
@@ -29,6 +29,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
+    pagination_class = None
     permission_classes = (AllowAny,)
     serializer_class = TagSerializer
 
@@ -39,7 +40,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOwnerOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
-    pagination_class = CustomPageNumberPagination
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

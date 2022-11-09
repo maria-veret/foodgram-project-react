@@ -2,7 +2,7 @@ version: '3.3'
 services:
 
   frontend:
-    image: mari4veret/foodgram_frontend:latest
+    image: mari4veret/food_frontend:v1
     volumes:
       - ../frontend/:/app/result_build/
 
@@ -14,7 +14,7 @@ services:
       - ./.env
 
   backend:
-    image: mari4veret/foodgram_backend:latest
+    image: mari4veret/food_backend:latest
     restart: always
     volumes:
       - static_vol:/app/static/

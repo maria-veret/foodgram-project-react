@@ -6,19 +6,24 @@ from django.db import models
 
 class User(AbstractUser):
     username_validator = UnicodeUsernameValidator()
-    username = models.CharField(
-        verbose_name='Логин', 
-        max_length=150,
-        unique=True,
-        validators=[username_validator],
-        error_messages={'unique': 'Имя занято'},
-    )
     email = models.EmailField(
-        verbose_name='Email',
-        max_length=254,
+        verbose_name='адрес электронной почты',
         blank=False,
         unique=True,
-        error_messages={'unique': 'Email уже использовался'},
+        max_length=254,
+        error_messages={
+            'unique': 'Такой адрес электронной почты уже зарегистрирован.'
+        },
+    )
+    username = models.CharField(
+        verbose_name='логин',
+        max_length=150,
+        unique=True,
+        help_text='Не более 150 символов.',
+        validators=[username_validator],
+        error_messages={
+            'unique': 'Пользователь с таким именем уже зарегистрирован.'
+        },
     )
     first_name = models.CharField(verbose_name='имя', max_length=150)
     last_name = models.CharField(verbose_name='фамилия', max_length=150)
@@ -49,6 +54,12 @@ class User(AbstractUser):
         ordering = ('username',)
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+        constraints = [
+            models.CheckConstraint(
+                check=~models.Q(username='me'),
+                name='Пользователь не может быть назван me!',
+            )
+        ]
 
 
 class Follow(models.Model):

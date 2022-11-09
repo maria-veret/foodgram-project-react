@@ -1,15 +1,21 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from drf_base64.fields import Base64ImageField
-from rest_framework.validators import UniqueTogetherValidator
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
 from users.models import Follow
+from .models import (
+    Favorite, Ingredient, Recipe, ShoppingCart, Tag, IngredientRecipe
+)
 from .models import User
-from .models import (Ingredient, Recipe,
-                     Favorite, Tag,
-                     IngredientRecipe,
-                     ShoppingCart)
+
+
+class IngredientSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ('id', 'name', 'measurement_unit')
+        model = Ingredient
+        read_only_fields = ('id', 'name', 'measurement_unit')
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -24,7 +30,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-        if request.user.is_authenticated:
+        if request.user.is_anonymous:
             return False
         return Follow.objects.filter(
             user=request.user, author=obj.pk).exists()
@@ -34,24 +40,6 @@ class AuthorSerializer(serializers.ModelSerializer):
         fields = ('email', 'id', 'username',
                   'first_name', 'last_name',
                   'is_subscribed')
-
-
-class FollowRecipeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Recipe
-        fields = (
-            'id',
-            'name',
-            'image',
-            'cooking_time'
-        )
-
-
-class IngredientSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = ('id', 'name', 'measurement_unit')
-        model = Ingredient
-        read_only_fields = ('id', 'name', 'measurement_unit')
 
 
 class IngredientRecipeSerializer(serializers.ModelSerializer):
@@ -148,9 +136,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop('ingredients', None)
         tags = validated_data.pop('tags', None)
         if not ingredients:
-            raise serializers.ValidationError('нужен хотя бы один ингредиент')
+            raise serializers.ValidationError('Нужен хотя бы один ингредиент')
         elif not tags:
-            raise serializers.ValidationError('нужен хотя бы один тег')
+            raise serializers.ValidationError('Нужен хотя бы один тег')
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags)
         ingredients_list = [
@@ -207,5 +195,16 @@ class RecipeSerializer(serializers.ModelSerializer):
             'name',
             'image',
             'text',
+            'cooking_time'
+        )
+
+
+class FollowRecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = (
+            'id',
+            'name',
+            'image',
             'cooking_time'
         )

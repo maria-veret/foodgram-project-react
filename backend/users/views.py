@@ -1,11 +1,11 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets
 from rest_framework import permissions, status, generics
-from rest_framework.response import Response
+from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.response import Response
 
-from .serializers import FollowListSerializer, FollowCreateSerializer
 from .models import User, Follow
+from .serializers import FollowListSerializer, FollowCreateSerializer
 
 
 class SubscriptionsView(generics.ListAPIView):
@@ -20,12 +20,14 @@ class SubscriptionsView(generics.ListAPIView):
 
 class SubscriptionsViewSet(viewsets.ModelViewSet):
 
-    @action(detail=True,
-            permission_classes=[permissions.IsAuthenticated],
-            methods=['POST'])
+    @action(
+        detail=True,
+        permission_classes=[permissions.IsAuthenticated],
+        methods=['POST']
+    )
     def subscribe(self, request, **kwargs):
-        user = self.request.user
         id = kwargs.get('pk')
+        user = self.request.user
         author = get_object_or_404(User, id=id)
         data = {'user': user.id, 'author': id}
         serializer = FollowCreateSerializer(
@@ -40,14 +42,18 @@ class SubscriptionsViewSet(viewsets.ModelViewSet):
 
     @subscribe.mapping.delete
     def unsubscribe(self, request, **kwargs):
-        user = self.request.user
         id = kwargs.get('pk')
+        user = self.request.user
         author = get_object_or_404(User, id=id)
         follow = Follow.objects.filter(user=user, author=author)
         if follow.exists():
             follow.delete()
-            return Response({'detail': 'Вы отписались от автора'},
-                            status=status.HTTP_204_NO_CONTENT)
+            return Response(
+                {'detail': 'Вы отписались от автора'},
+                status=status.HTTP_204_NO_CONTENT
+            )
 
-        return Response({'detail': 'Вы не были подписаны на данного автора'},
-                        status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {'detail': 'Вы не были подписаны на данного автора'},
+            status=status.HTTP_400_BAD_REQUEST
+        )

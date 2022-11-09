@@ -9,11 +9,11 @@ class RecipeFilter(rest_framework_filter.FilterSet):
     author = rest_framework_filter.ModelChoiceFilter(
         queryset=User.objects.all()
     )
-    is_favorited = rest_framework_filter.BooleanFilter(
-        method='filter_is_favorited'
-    )
     tags = rest_framework_filter.AllValuesMultipleFilter(
         field_name='tags__slug'
+    )
+    is_favorited = rest_framework_filter.BooleanFilter(
+        method='filter_is_favorited'
     )
     is_in_shopping_cart = rest_framework_filter.BooleanFilter(
         method='filter_is_in_shopping_cart'
