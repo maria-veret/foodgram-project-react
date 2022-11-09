@@ -55,6 +55,8 @@ jobs:
           echo ${{ secrets.USER_PASSWORD }} |
           sudo -S docker compose exec -it backend python manage.py collectstatic --no-input
           echo ${{ secrets.USER_PASSWORD }} |
+          sudo -S docker compose exec -it backend python manage.py makemigrations
+          echo ${{ secrets.USER_PASSWORD }} |
           sudo -S docker compose exec -it backend python manage.py migrate
 
   send_message:
