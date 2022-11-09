@@ -36,7 +36,7 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-          cd foodgram-project-react/infra
+          cd foodgram/infra
           echo ${{ secrets.USER_PASSWORD }} | sudo -S docker compose stop
           sudo docker compose rm -f backend
           sudo docker image rmi ${{ secrets.DOCKER_USERNAME }}/food_backend
