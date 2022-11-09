@@ -56,7 +56,7 @@ docker build -t mari4veret/food_backend:latest .
 ```
 
 ```
-docker build -t mari4veret/food_frontend:latest .
+docker build -t mari4veret/food_frontend:v1 .
 ```
 
 Перейдите в директорию infra:
@@ -145,7 +145,7 @@ git clone https://github.com/maria-veret/foodgram-project-react.git
 Создайте и активируйте виртуальное окружение:
 
 ```
-python -m venv venv
+python3 -m venv venv
 ```
 ```
 source venv/bin/activate
